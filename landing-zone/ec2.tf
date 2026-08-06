@@ -3,11 +3,6 @@
 # ---------------------------------------------------------
 
 
-variable "deploy_demo_ec2" {
-  type    = bool
-  default = false
-}
-
 data "aws_ami" "amazon_linux" {
   most_recent = true
 
@@ -29,62 +24,61 @@ data "aws_ami" "amazon_linux" {
 # Public EC2 Instance
 # ---------------------------------------------------------
 resource "aws_instance" "public" {
-    //preventing the creation of the public EC2 instance if deploy_demo_ec2 is set to false
-    count = var.deploy_demo_ec2 ? 1 : 0
-    ami = data.aws_ami.amazon_linux.id
-    instance_type = "t2.micro"
+  //preventing the creation of the public EC2 instance if deploy_demo_ec2 is set to false
+  count         = var.deploy_demo_ec2 ? 1 : 0
+  ami           = data.aws_ami.amazon_linux.id
+  instance_type = "t2.micro"
 
-    subnet_id = aws_subnet.public.id
-    vpc_security_group_ids = [aws_security_group.public.id]
+  subnet_id              = aws_subnet.public.id
+  vpc_security_group_ids = [aws_security_group.public.id]
 
 
-    associate_public_ip_address = true
-    iam_instance_profile = aws_iam_instance_profile.ec2_ssm.name
+  associate_public_ip_address = true
+  iam_instance_profile        = aws_iam_instance_profile.ec2_ssm.name
 
-    root_block_device {
-      encrypted = true
-    }
+  root_block_device {
+    encrypted = true
+  }
 
-    metadata_options {
-      http_endpoint = "enabled"
-      http_tokens   = "required"
-    }
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
 
-    tags = {
-        Name      = "Landing Zone Public EC2 Instance"
-        ManagedBy = "Terraform"
-        Project   = "Secure AWS Landing Zone"
-    }
+  tags = {
+    Name      = "Landing Zone Public EC2 Instance"
+    ManagedBy = "Terraform"
+    Project   = "Secure AWS Landing Zone"
+  }
 }
 
 # ---------------------------------------------------------
 # Private EC2 Instance
 # ---------------------------------------------------------
 resource "aws_instance" "private" {
-    count = var.deploy_demo_ec2 ? 1 : 0
-    ami = data.aws_ami.amazon_linux.id
-    instance_type = "t2.micro"
+  count         = var.deploy_demo_ec2 ? 1 : 0
+  ami           = data.aws_ami.amazon_linux.id
+  instance_type = "t2.micro"
 
-    subnet_id = aws_subnet.private.id
-    vpc_security_group_ids = [aws_security_group.private.id]
+  subnet_id              = aws_subnet.private.id
+  vpc_security_group_ids = [aws_security_group.private.id]
 
-    associate_public_ip_address = false
-    iam_instance_profile = aws_iam_instance_profile.ec2_ssm.name
+  associate_public_ip_address = false
+  iam_instance_profile        = aws_iam_instance_profile.ec2_ssm.name
 
-    root_block_device {
-      encrypted = true
-    }
+  root_block_device {
+    encrypted = true
+  }
 
-    metadata_options {
-      http_endpoint = "enabled"
-      http_tokens   = "required"
-    }
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
 
-    tags = {
-        Name      = "Landing Zone Private EC2 Instance"
-        ManagedBy = "Terraform"
-        Project   = "Secure AWS Landing Zone"
-    }
+  tags = {
+    Name      = "Landing Zone Private EC2 Instance"
+    ManagedBy = "Terraform"
+    Project   = "Secure AWS Landing Zone"
+  }
 }
-
 

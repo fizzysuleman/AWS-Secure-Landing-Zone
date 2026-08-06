@@ -7,6 +7,13 @@
 *.tfplan
 *.tfvars
 *.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.*
 
 # Terraform-generated dependency lock override files
 override.tf
@@ -19,6 +26,7 @@ override.tf.json
 terraform.rc
 crash.log
 crash.*.log
+.terraform.tfstate.lock.info
 
 # Common operating-system and editor files
 .DS_Store

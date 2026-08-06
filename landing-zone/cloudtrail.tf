@@ -1,7 +1,7 @@
 
 
 resource "aws_s3_bucket" "cloudtrail_logs" {
-  bucket = "landing-zone-cloudtrail-logs-faizal"
+  bucket = "landing-zone-cloudtrail-logs-${data.aws_caller_identity.current.account_id}"
 
   force_destroy = false
 
@@ -60,13 +60,19 @@ data "aws_iam_policy_document" "cloudtrail_bucket_policy" {
   statement {
     sid    = "AWSCloudTrailAclCheck"
     effect = "Allow"
-    
+
     actions   = ["s3:GetBucketAcl"]
     resources = [aws_s3_bucket.cloudtrail_logs.arn]
 
     principals {
       type        = "Service"
       identifiers = ["cloudtrail.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = ["arn:aws:cloudtrail:${var.aws_region}:${data.aws_caller_identity.current.account_id}:trail/landing-zone-cloudtrail"]
     }
   }
 
@@ -86,6 +92,12 @@ data "aws_iam_policy_document" "cloudtrail_bucket_policy" {
       test     = "StringEquals"
       variable = "s3:x-amz-acl"
       values   = ["bucket-owner-full-control"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = ["arn:aws:cloudtrail:${var.aws_region}:${data.aws_caller_identity.current.account_id}:trail/landing-zone-cloudtrail"]
     }
   }
 }

@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "ec2_trust_policy" {
 }
 
 resource "aws_iam_role" "ec2_ssm" {
-  name = "landing-zone-ec2-ssm-role"
+  name               = "landing-zone-ec2-ssm-role"
   assume_role_policy = data.aws_iam_policy_document.ec2_trust_policy.json
 
   tags = {
@@ -107,7 +107,7 @@ resource "aws_vpc_endpoint" "ssm" {
   vpc_id            = aws_vpc.landing_zone.id
   vpc_endpoint_type = "Interface"
 
-  service_name = "com.amazonaws.us-east-1.${each.value}"
+  service_name = "com.amazonaws.${var.aws_region}.${each.value}"
 
   subnet_ids = [
     aws_subnet.private.id

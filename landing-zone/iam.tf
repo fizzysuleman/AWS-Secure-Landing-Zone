@@ -174,12 +174,8 @@ resource "aws_iam_group_policy_attachment" "security_auditors_assume_role" {
 # ---------------------------------------------------------
 
 resource "aws_iam_group_membership" "security_auditors" {
-  name = "security-auditors-membership"
-
-  users = [
-    "iam-test-user"
-  ]
-
+  name  = "security-auditors-membership"
+  users = var.security_auditor_user_names
   group = aws_iam_group.security_auditors.name
 }
 

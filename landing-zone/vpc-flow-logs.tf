@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "vpc_flow_logs_trust" {
       ]
     }
   }
-  
+
 }
 
 resource "aws_iam_role" "vpc_flow_logs" {
