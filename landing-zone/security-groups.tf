@@ -51,10 +51,10 @@ resource "aws_security_group" "private" {
     vpc_id      = aws_vpc.landing_zone.id
 
     ingress {
-        description = "Allow all inbound traffic from the public security group"
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
+        description = "Allow SSH traffic from the public security group"
+        from_port   = 22
+        to_port     = 22
+        protocol    = "tcp"
         security_groups = [aws_security_group.public.id]
     }
 
