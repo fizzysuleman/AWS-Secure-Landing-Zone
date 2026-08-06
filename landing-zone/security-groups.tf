@@ -6,14 +6,6 @@ resource "aws_security_group" "public" {
     vpc_id      = aws_vpc.landing_zone.id
 
     ingress {
-        description = "Allow SSH access"
-        from_port   = 22
-        to_port     = 22
-        protocol    = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-    }
-
-    ingress {
         description = "Allow HTTP access"
         from_port   = 80
         to_port     = 80
@@ -50,13 +42,6 @@ resource "aws_security_group" "private" {
     description = "Security group for private access to the landing zone"
     vpc_id      = aws_vpc.landing_zone.id
 
-    ingress {
-        description = "Allow SSH traffic from the public security group"
-        from_port   = 22
-        to_port     = 22
-        protocol    = "tcp"
-        security_groups = [aws_security_group.public.id]
-    }
 
     egress {
         description = "Allow all outbound traffic"

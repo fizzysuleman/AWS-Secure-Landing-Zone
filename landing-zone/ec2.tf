@@ -37,10 +37,18 @@ resource "aws_instance" "public" {
     subnet_id = aws_subnet.public.id
     vpc_security_group_ids = [aws_security_group.public.id]
 
-    key_name = "landing-zone-key"
 
     associate_public_ip_address = true
     iam_instance_profile = aws_iam_instance_profile.ec2_ssm.name
+
+    root_block_device {
+      encrypted = true
+    }
+
+    metadata_options {
+      http_endpoint = "enabled"
+      http_tokens   = "required"
+    }
 
     tags = {
         Name      = "Landing Zone Public EC2 Instance"
@@ -60,9 +68,17 @@ resource "aws_instance" "private" {
     subnet_id = aws_subnet.private.id
     vpc_security_group_ids = [aws_security_group.private.id]
 
-    key_name = "landing-zone-key"
     associate_public_ip_address = false
     iam_instance_profile = aws_iam_instance_profile.ec2_ssm.name
+
+    root_block_device {
+      encrypted = true
+    }
+
+    metadata_options {
+      http_endpoint = "enabled"
+      http_tokens   = "required"
+    }
 
     tags = {
         Name      = "Landing Zone Private EC2 Instance"
