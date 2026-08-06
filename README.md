@@ -50,20 +50,12 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for trust boundaries, traffic paths, and 
 - VPC Flow Logs for all accepted and rejected traffic with 14-day CloudWatch retention
 - AWS Config recording with restricted-SSH and S3 public-access rules
 
-Control-to-code mapping is in [SECURITY_CONTROLS.md](SECURITY_CONTROLS.md), and risks are analyzed in [THREAT_MODEL.md](THREAT_MODEL.md).
-
 ## Repository structure
 
 ```text
 .
 ├── README.md
 ├── ARCHITECTURE.md
-├── THREAT_MODEL.md
-├── SECURITY_CONTROLS.md
-├── SECURITY_VALIDATION.md
-├── DEPLOYMENT_GUIDE.md
-├── COST_ANALYSIS.md
-├── LESSONS_LEARNED.md
 └── landing-zone/
     ├── main.tf                 # provider, backend, and state-bucket controls
     ├── variables.tf            # safe deployment inputs
@@ -102,7 +94,7 @@ terraform plan
 terraform apply
 ```
 
-The backend bucket must exist before `terraform init`. If it was created outside this configuration, import it before managing it here; the detailed and safer sequence is in [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md).
+The backend bucket must exist before `terraform init`. If it was created outside this configuration, import it before managing it here.
 
 To add existing IAM auditors or an SNS email subscription, use uncommitted CLI variables or an ignored local `.tfvars` file:
 
@@ -126,11 +118,11 @@ No key pair is configured and no security group permits port 22. The private ins
 
 ## Validation status
 
-Static inspection confirms that the Terraform expresses the controls listed above. It does **not** prove that resources are currently deployed or working. Runtime checks—CloudTrail delivery, SNS alarm delivery, Flow Log records, Config evaluation, and Session Manager access—remain `NOT YET VERIFIED` until AWS evidence is captured. Use [SECURITY_VALIDATION.md](SECURITY_VALIDATION.md) as the test and evidence checklist.
+Static inspection confirms that the Terraform expresses the controls listed above. It does **not** prove that resources are currently deployed or working. Runtime checks—CloudTrail delivery, SNS alarm delivery, Flow Log records, Config evaluation, and Session Manager access—remain `NOT YET VERIFIED` until AWS evidence is captured.
 
 ## Cost and cleanup
 
-The most likely recurring charges come from the three interface endpoints, AWS Config, CloudWatch Logs and Flow Logs, EC2/EBS when enabled, and S3 requests/storage. Stopped instances can still incur EBS storage charges, and interface endpoints charge hourly. See [COST_ANALYSIS.md](COST_ANALYSIS.md).
+The most likely recurring charges come from the three interface endpoints, AWS Config, CloudWatch Logs and Flow Logs, EC2/EBS when enabled, and S3 requests/storage. Stopped instances can still incur EBS storage charges, and interface endpoints charge hourly.
 
 Safe cleanup order:
 
@@ -144,6 +136,6 @@ Never casually destroy the backend: it contains Terraform's record of the enviro
 
 ## Lessons and future improvements
 
-The project demonstrates that private management does not require inbound SSH or a NAT Gateway, but endpoint-based access has its own recurring cost. It also highlights the bootstrap boundary created when Terraform manages the same bucket used as its backend. See [LESSONS_LEARNED.md](LESSONS_LEARNED.md).
+The project demonstrates that private management does not require inbound SSH or a NAT Gateway, but endpoint-based access has its own recurring cost. It also highlights the bootstrap boundary created when Terraform manages the same bucket used as its backend.
 
 Reasonable future projects include AWS Organizations/Control Tower, centralized multi-account logging, customer-managed KMS keys, automated remediation, and a dedicated CI/CD security pipeline. They are intentionally outside this repository's scope.
